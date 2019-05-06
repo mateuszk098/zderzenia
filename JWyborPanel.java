@@ -67,5 +67,7 @@ public class JWyborPanel extends JPanel
 		this.add(new JLabel("      Masa (kg)"));
 		panelMasa2.add(masaKulka2);
 		this.add(panelMasa2);
+		
+		//test
 	}
 }
