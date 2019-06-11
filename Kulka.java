@@ -1,90 +1,119 @@
-package projekt;
+package projektV6;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.Arrays;
+import java.awt.geom.Ellipse2D;
 
-import javax.imageio.ImageIO;
-
-public class Kulka implements Runnable{
+public class Kulka
+{
+	private double x,y,r,vx,vy,m;
+	Color color;
 	
-	private int SrodekX;
-	private int SrodekY;
-	private int Promien;
-	private Color kolor=Color.RED;
-	private int vx = 0;
-	private int vy = 0;
-
-	//private BufferedImage[] animation = null;
-	private int currentFrame = 0;
-	private boolean active = true;
-
-	public Kulka(boolean displayAnimation) {
-		
+	public Kulka(double x,double y,double r)
+	{
+		this.x=x;
+		this.y=y;
+		this.r=r;
 	}
 	
-	public int getX() {
-        return SrodekX;
-    }
-
-    public void setX(int xPos) {
-        this.SrodekX = xPos;
-    }
-
-    public void setY(int yPos) {
-        this.SrodekY = yPos;
-    }
-
-    public int getY() {
-        return SrodekY;
-    }
-    
-    public int getR() {
-    	return Promien;
-    }
-    
-    public void setR(int r) {
-        this.Promien = r;
-    }
-    
-    public Color getColor() {
-        return kolor;
-    }
-
-    public void setColor(Color color) {
-        this.kolor = color;
-    }
-    
-    public int getVx() {
+	public void draw(Graphics g)
+	{
+		Graphics2D g2=(Graphics2D) g;
+		Ellipse2D oval=new Ellipse2D.Double(getX()-getR()/2,getY()-getR()/2,getR(),getR());	
+		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g2.setColor(color);
+		g2.fill(oval);
+	}
+	
+	public void Warunki()
+	{
+		setX(getX()+getVX());
+		
+		if(getX()-getR()/2<0)
+		{
+			setX(getR()/2);
+			setVX(-getVX());
+		}
+		else if(getX()+getR()/2>780)
+		{
+			setVX(-getVX());
+		}
+		
+		setY(getY()+getVY());
+		
+		if(getY()-getR()/2<0)
+		{
+			setY(getR()/2);
+			setVY(-getVY());
+		}
+		else if(getY()+getR()/2>440)
+		{
+			setY(440-getR()/2);
+            setVY(-getVY());
+		}
+	}
+	
+	public double getVX() 
+    {
         return vx;
     }
 
-    public void setVx(int vx) {
-        this.vx = vx;
+    public void setVX(double vx) 
+    {
+        this.vx=vx;
     }
 
-    public int getVy() {
+    public double getVY() 
+    {
         return vy;
     }
 
-    public void setVy(int vy) {
-        this.vy = vy;
+    public void setVY(double vy) 
+    {
+        this.vy=vy;
+    }
+
+    public double getX() 
+    {
+        return x;
+    }
+
+    public void setX(double x)
+    {
+        this.x=x;
+    }
+
+    public double getY() 
+    {
+        return y;
+    }
+
+    public void setY(double y) 
+    {
+        this.y=y;
+    }
+
+    public double getR() 
+    {
+        return r;
+    }
+
+    public void setR(double r) 
+    {
+        this.r=r;
     }
     
-    public void paint(Graphics g) {
-        g.setColor(getColor());
-        g.fillOval(SrodekX, SrodekY, getR(), getR());
-        
+    public double getM()
+    {
+    	return m;
     }
-
-
-	public void run() {
-		
-		
-	}
-
+    
+    public void setM(double m)
+    {
+    	this.m=m;
+    }
+    
+    public void setBallColor(Color ballColor)
+    {
+    	color=ballColor;
+    }
 }

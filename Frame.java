@@ -1,61 +1,71 @@
-package projekt;
+package projektV6;
 
 import java.awt.*;
 import java.awt.event.*;
 
 import javax.swing.*;
-import javax.swing.event.*;
 
-import projekt.WykresFrame.keyListener;
-
-public class Frame extends JFrame implements ActionListener
-{
+public class Frame extends JFrame implements ActionListener 
+{	
 	JMenu menu=new JMenu("Menu");
-	JMenu submenu=new JMenu("Ustawienia Językowe");
-	JMenuItem submenuItem1=new JMenuItem("Język Polski");
-	JMenuItem submenuItem2=new JMenuItem("Język Angielski");
-	JMenuItem menuItem2=new JMenuItem("Zakończ");
-	JMenuItem menuItem3=new JMenuItem("Nowe Zderzenie");
+	JMenu submenu=new JMenu("Ustawienia Jezykowe");
+	JMenuItem submenuItem1=new JMenuItem("Jezyk Polski");
+	JMenuItem submenuItem2=new JMenuItem("Jezyk Angielski");
+	JMenuItem menuItem3=new JMenuItem("Wyjscie");
+	JMenuItem menuItem2=new JMenuItem("Nowe Zderzenie");
 	JMenuBar menuBar=new JMenuBar();
 	
-	JButton BkolorTla=new JButton("Kolor Tła");
+	JButton BkolorTla=new JButton("Kolor Tla");
 	JButton BkolorKulki1=new JButton("Kolor Kulki 1");
 	JButton BkolorKulki2=new JButton("Kolor Kulki 2");
 	JButton Bstart=new JButton("Start");
 	JButton Bstop=new JButton("Stop");
-	JButton Bwykres=new JButton("Wykres v(t)");
+	JButton Bwykres=new JButton("Wykres V(t)");
+	JButton Bakceptuj=new JButton("Akceptuj");
 	
-	JRadioButton rBsprezyste=new JRadioButton("Sprężyste");
-	JRadioButton rBniesprezyste=new JRadioButton("Niesprężyste");
+	JRadioButton rBsprezyste=new JRadioButton("Sprezyste");
+	JRadioButton rBniesprezyste=new JRadioButton("Niesprezyste");
 	ButtonGroup buttonGroup=new ButtonGroup();
+	
+	JLabel LRodzajZderzenia=new JLabel("Rodzaj Zderzenia");
 	
 	JPanel panelKolory=new JPanel();
 	JPanel panelCentralny=new JPanel();
 	JPanel panelStartStop=new JPanel(new GridLayout(8,1));
 	JWyborPanel panelDane=new JWyborPanel();
 	
+	PanelRysowania panelRysujacy=new PanelRysowania();
+	
+	String aktualny="Sprezyste";
+	static String Language="PL";
+	
 	Frame()
 	{
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		this.setSize(820,540);
-		this.setTitle("Symulator Zderzeń Sprężystych i Niesprężystych");
+		this.setSize(1020,540);
+		this.setTitle("Symulator Zderzen Sprezystych i Niesprezystych");
 		this.setJMenuBar(createMenu());
-
+		
 		BkolorTla.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				Color kolor = JColorChooser.showDialog(null, "Wybierz kolor", Color.BLACK);
-				panelCentralny.setBackground(kolor);
+				if(Language=="PL") {
+					Color kolor=JColorChooser.showDialog(null,"Wybierz Kolor",Color.BLACK);
+					panelRysujacy.setBackground(kolor);
+				}
+				if(Language=="EN") {
+					Color kolor=JColorChooser.showDialog(null,"Choose Color",Color.BLACK);
+					panelRysujacy.setBackground(kolor);
+				}
 			}
 		});
 		
 		BkolorKulki1.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent e)
-			{
-				Color kolor = JColorChooser.showDialog(null, "Wybierz kolor", Color.BLACK);
-
+			{			
+				panelRysujacy.kolorKulki1();				
 			}
 		});
 		
@@ -63,17 +73,54 @@ public class Frame extends JFrame implements ActionListener
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				Color kolor = JColorChooser.showDialog(null, "Wybierz kolor", Color.BLACK);
-
+				panelRysujacy.kolorKulki2();	
 			}
 		});
 		
 		Bwykres.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent e)
+			{			        
+		        Bwykres.setEnabled(false);
+		        WykresFrame wykres=new WykresFrame();	        
+		        SwingWorker worker=new SwingWorker()
+		        {
+		            protected Object doInBackground() throws Exception
+		            {
+		            	wykres.go();
+		                return null;
+		            }
+
+		            protected void done()
+		            {
+		            	Bwykres.setEnabled(true);
+		            }
+		        };
+		        worker.execute();        
+			}
+		});
+		
+		Bakceptuj.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent e)
 			{
-				WykresFrame wykres=new WykresFrame();
-				wykres.setVisible(true);
+				panelRysujacy.przedZderzeniem();
+			}
+		});
+		
+		Bstart.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent e) 
+			{
+				panelRysujacy.startZderzenia();
+			}
+		});
+		
+		Bstop.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent e) 
+			{
+				panelRysujacy.stopZderzenia();
 			}
 		});
 		
@@ -84,9 +131,27 @@ public class Frame extends JFrame implements ActionListener
 		
 		buttonGroup.add(rBsprezyste);
 		buttonGroup.add(rBniesprezyste);
-		rBsprezyste.setSelected(true);
+		buttonGroup.clearSelection();
+		//rBsprezyste.setSelected(true);
+		//rBsprezyste.requestFocus();
 		
-		panelStartStop.add(new JLabel("Rodzaj Zderzenia"));
+		rBsprezyste.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent e) 
+			{
+				panelRysujacy.setZderzenie("Sprezyste");	
+			}
+		});
+		
+		rBniesprezyste.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent e) 
+			{
+				panelRysujacy.setZderzenie("Niesprezyste");		
+			}
+		});
+		
+		panelStartStop.add(LRodzajZderzenia);
 		panelStartStop.add(rBsprezyste);
 		panelStartStop.add(rBniesprezyste);
 		panelStartStop.add(Bstart);
@@ -94,10 +159,15 @@ public class Frame extends JFrame implements ActionListener
 		panelStartStop.add(Bwykres);
 		this.add(panelStartStop,BorderLayout.LINE_START);
 		
+		panelDane.add(Bakceptuj);
 		this.add(panelDane,BorderLayout.LINE_END);
-		
-		panelCentralny.setBackground(Color.white);
-		this.add(panelCentralny,BorderLayout.CENTER);
+
+		this.add(panelRysujacy,BorderLayout.CENTER);
+	}
+	
+	public void SetTitle(String NowyTytul)
+	{
+		this.setTitle(NowyTytul);
 	}
 	
 	public JMenuBar createMenu()
@@ -105,27 +175,121 @@ public class Frame extends JFrame implements ActionListener
 		menuBar.add(menu);
 	
 		submenu.setMnemonic(KeyEvent.VK_S);
+		
+		submenuItem1.setActionCommand("Jezyk Polski");
+		submenuItem1.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent e) 
+			{
+				if(Language=="EN") 
+				{
+					Language="PL";
+					BkolorTla.setText("Kolor Tla");
+					BkolorKulki1.setText("Kolor Kulki 1");
+					BkolorKulki2.setText("Kolor Kulki 2");
+					Bakceptuj.setText("Akceptuj");
+					Bwykres.setText("Wykres V(t)");
+					rBsprezyste.setText("Sprezyste");
+					rBniesprezyste.setText("Niesprezyste");
+					LRodzajZderzenia.setText("Rodzaj Zderzenia");
+					
+					JWyborPanel.LKulka1.setText("       KULKA 1");
+					JWyborPanel.LPredkoscKulka1.setText(" Predkosc (m/s) ");
+					//JWyborPanel.LSkladowePredkosciKulka1.setText("  X     Y    ");
+					JWyborPanel.LPolozenieKulka1.setText("     Polozenie");
+					//JWyborPanel.LSkladowePolozeniaKulki1.setText("Ball 1");
+					JWyborPanel.LMasaKulki1.setText("      Masa (kg)");
+					
+					JWyborPanel.LKulka2.setText("       KULKA 1");
+					JWyborPanel.LPredkoscKulka2.setText(" Predkosc (m/s) ");
+					//JWyborPanel.LSkladowePredkosciKulka2.setText("  X     Y    ");
+					JWyborPanel.LPolozenieKulka2.setText("     Polozenie");
+					//JWyborPanel.LSkladowePolozeniaKulki2.setText("Ball 1");
+					JWyborPanel.LMasaKulki2.setText("      Masa (kg)");
+					
+					SetTitle("Symulator Zderzen Sprezystych i Niesprezystych");
+					
+					submenu.setText("Ustawienia Jezykowe");
+					submenuItem1.setText("Jezyk Polski");
+					submenuItem2.setText("Jezyk Angielski");
+					menuItem2.setText("Nowe Zderzenie");
+					menuItem3.setText("Wyjscie");
+				}			
+			}
+		});
+		
+		submenuItem2.setActionCommand("Jezyk Angielski");
+		submenuItem2.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent e) 
+			{
+				if(Language=="PL") 
+				{
+					Language="EN";
+					BkolorTla.setText("Background Color");
+					BkolorKulki1.setText("Ball 1 Color");
+					BkolorKulki2.setText("Ball 2 Color");
+					Bakceptuj.setText("Accept");
+					Bwykres.setText("Chart V(t)");
+					rBsprezyste.setText("Elastic");
+					rBniesprezyste.setText("Inelastic");
+					LRodzajZderzenia.setText("Type of Collision");
+					
+					JWyborPanel.LKulka1.setText("       BALL 1 ");
+					JWyborPanel.LPredkoscKulka1.setText(" Velocity (m/s) ");
+					//JWyborPanel.LSkladowePredkosciKulka1.setText("  X     Y    ");
+					JWyborPanel.LPolozenieKulka1.setText("      Position");
+					//JWyborPanel.LSkladowePolozeniaKulki1.setText("Ball 1");
+					JWyborPanel.LMasaKulki1.setText("      Mass (kg)");
+					
+					JWyborPanel.LKulka2.setText("       BALL 2 ");
+					JWyborPanel.LPredkoscKulka2.setText(" Velocity (m/s) ");
+					//JWyborPanel.LSkladowePredkosciKulka2.setText("  X     Y    ");
+					JWyborPanel.LPolozenieKulka2.setText("      Position");
+					//JWyborPanel.LSkladowePolozeniaKulki2.setText("Ball 1");
+					JWyborPanel.LMasaKulki2.setText("      Mass (kg)");
+					
+					SetTitle("Simulation of Elastic and Inelastic Collisions");
+					
+					submenu.setText("Language Settings");
+					submenuItem1.setText("Polish");
+					submenuItem2.setText("English");
+					menuItem2.setText("New Collisoin");
+					menuItem3.setText("Exit");
+				}
+			}
+		});
+			
 		submenu.add(submenuItem1);
 		submenu.add(submenuItem2);
+			
 		menu.add(submenu);
 		
-		menuItem2.setActionCommand("Zakończ");
+		menuItem2.setActionCommand("Nowe zderzenie");
 		menuItem2.addActionListener(new ActionListener() 
+		{
+
+			public void actionPerformed(ActionEvent e) 
+			{
+				panelRysujacy.noweZderzenie();
+			}
+		});
+		menu.add(menuItem2);
+		
+		menuItem3.setActionCommand("Zakoncz");
+		menuItem3.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent e) 
 			{
 				System.exit(0);
 			}
 		});
-		
 		menu.add(menuItem3);
-		
-		menu.add(menuItem2);
 		
 		return menuBar;
 	}
 	
-	public static void main (String[] args)
+	public static void main (String[] args) throws Exception
 	{
 		Frame frame=new Frame();
 		frame.setVisible(true);
