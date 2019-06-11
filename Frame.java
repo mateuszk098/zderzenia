@@ -1,4 +1,4 @@
-package projektV6;
+package projekt;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -50,12 +50,15 @@ public class Frame extends JFrame implements ActionListener
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				if(Language=="PL") {
-					Color kolor=JColorChooser.showDialog(null,"Wybierz Kolor",Color.BLACK);
+				if(Language=="PL") 
+				{
+					Color kolor=JColorChooser.showDialog(null,"Wybierz Kolor", Color.BLACK);
 					panelRysujacy.setBackground(kolor);
 				}
-				if(Language=="EN") {
-					Color kolor=JColorChooser.showDialog(null,"Choose Color",Color.BLACK);
+				
+				if(Language=="EN") 
+				{
+					Color kolor=JColorChooser.showDialog(null,"Choose Color", Color.BLACK);
 					panelRysujacy.setBackground(kolor);
 				}
 			}
@@ -179,6 +182,7 @@ public class Frame extends JFrame implements ActionListener
 		submenuItem1.setActionCommand("Jezyk Polski");
 		submenuItem1.addActionListener(new ActionListener() 
 		{
+
 			public void actionPerformed(ActionEvent e) 
 			{
 				if(Language=="EN") 
@@ -214,13 +218,14 @@ public class Frame extends JFrame implements ActionListener
 					submenuItem2.setText("Jezyk Angielski");
 					menuItem2.setText("Nowe Zderzenie");
 					menuItem3.setText("Wyjscie");
-				}			
+				}
+				
 			}
 		});
-		
 		submenuItem2.setActionCommand("Jezyk Angielski");
 		submenuItem2.addActionListener(new ActionListener() 
 		{
+
 			public void actionPerformed(ActionEvent e) 
 			{
 				if(Language=="PL") 
@@ -259,10 +264,10 @@ public class Frame extends JFrame implements ActionListener
 				}
 			}
 		});
-			
+				
 		submenu.add(submenuItem1);
 		submenu.add(submenuItem2);
-			
+	
 		menu.add(submenu);
 		
 		menuItem2.setActionCommand("Nowe zderzenie");

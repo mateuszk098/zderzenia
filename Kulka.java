@@ -1,4 +1,4 @@
-package projektV6;
+package projekt;
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
@@ -18,37 +18,66 @@ public class Kulka
 	public void draw(Graphics g)
 	{
 		Graphics2D g2=(Graphics2D) g;
-		Ellipse2D oval=new Ellipse2D.Double(getX()-getR()/2,getY()-getR()/2,getR(),getR());	
+		Ellipse2D oval=new Ellipse2D.Double(getX()-getR(),getY()-getR(),2*getR(),2*getR());	
+		
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g2.setColor(color);
 		g2.fill(oval);
 	}
 	
-	public void Warunki()
+	public void WarunkiSprezyste()
 	{
 		setX(getX()+getVX());
 		
-		if(getX()-getR()/2<0)
+		if(getX()-getR()<0)
 		{
-			setX(getR()/2);
+			setX(getR());
 			setVX(-getVX());
 		}
-		else if(getX()+getR()/2>780)
+		if(getX()+getR()>780)
 		{
 			setVX(-getVX());
 		}
 		
 		setY(getY()+getVY());
 		
-		if(getY()-getR()/2<0)
+		if(getY()-getR()<0)
 		{
-			setY(getR()/2);
+			setY(getR());
 			setVY(-getVY());
 		}
-		else if(getY()+getR()/2>440)
+		if(getY()+getR()>440)
 		{
-			setY(440-getR()/2);
+			setY(440-getR());
             setVY(-getVY());
+		}
+	}
+	
+	public void WarunkiNiesprezyste()
+	{
+		setX(getX()+getVX());
+		
+		if(getX()-getR()<0)
+		{
+			setX(getR());
+			setVX(0);
+		}
+		if(getX()+getR()>780)
+		{
+			setVX(0);
+		}
+		
+		setY(getY()+getVY());
+		
+		if(getY()-getR()<0)
+		{
+			setY(getR());
+			setVY(0);
+		}
+		if(getY()+getR()>440)
+		{
+			setY(440-getR());
+            setVY(0);
 		}
 	}
 	

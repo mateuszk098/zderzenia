@@ -1,15 +1,18 @@
-package projektV6;
+package projekt;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 
 import javax.swing.JColorChooser;
 import javax.swing.JPanel;
 
+import org.jfree.data.gantt.Task;
+
 public class PanelRysowania extends JPanel implements Runnable
 {
-	static Kulka Kulka1=new Kulka(50,50,50);
-	static Kulka Kulka2=new Kulka(50,50,50);
+	static Kulka Kulka1=new Kulka(50,50,25);
+	static Kulka Kulka2=new Kulka(50,50,25);
 
 	Thread animacja;
 	
@@ -71,9 +74,9 @@ public class PanelRysowania extends JPanel implements Runnable
 	{
 		deltaX=Math.abs(Kulka1.getX()-Kulka2.getX());
         deltaY=Math.abs(Kulka1.getY()-Kulka2.getY());
-        odleglosc=deltaX*deltaX+deltaY*deltaY;
+        odleglosc=Math.sqrt(deltaX*deltaX+deltaY*deltaY);
         
-        if(odleglosc<(Kulka1.getR()/2+Kulka2.getR()/2)*(Kulka1.getR()/2+Kulka2.getR()/2)) 
+        if(odleglosc<Kulka1.getR()+Kulka2.getR()) //Math.sqrt(Kulka1.getR()*Kulka1.getR()+Kulka2.getR()*Kulka2.getR())
         {   
         	//zmienna pomocnicza
         	double L=1/Math.sqrt( (Kulka2.getX()-Kulka1.getX() )*(Kulka2.getX()-Kulka1.getX() ) + (Kulka2.getY()-Kulka1.getY() )*(Kulka2.getY()-Kulka1.getY() )  );//zmienna pomocnicza
@@ -88,7 +91,9 @@ public class PanelRysowania extends JPanel implements Runnable
         	
         	//predkosci normalne po zderzeniu
         	double Un1= ( (Kulka1.getM()-Kulka2.getM())*Vn1 + 2*Vn2*Kulka2.getM() )/( Kulka1.getM()+Kulka2.getM() );
-        	double Un2= ( (Kulka2.getM()-Kulka1.getM())*Vn2 + 2*Vn1*Kulka1.getM() )/( Kulka1.getM()+Kulka2.getM() ); 	
+        	double Un2= ( (Kulka2.getM()-Kulka1.getM())*Vn2 + 2*Vn1*Kulka1.getM() )/( Kulka1.getM()+Kulka2.getM() );
+        	
+        	
         	
         	double newVX1=L*( ( Kulka2.getX()-Kulka1.getX() )*Un1+( -Kulka2.getY()+Kulka1.getY() )*Vs1 );
         	double newVY1=L*( ( Kulka2.getY()-Kulka1.getY() )*Un1+( Kulka2.getX()-Kulka1.getX() )*Vs1 );
@@ -101,43 +106,74 @@ public class PanelRysowania extends JPanel implements Runnable
             
             Kulka2.setVX(newVX2);
             Kulka2.setVY(newVY2);
+            
+            /*double newVX1=(Kulka1.getVX()*(Kulka1.getM()-Kulka2.getM())+2*Kulka2.getM()*Kulka2.getVX())/(Kulka1.getM()+Kulka2.getM());
+        	double newVX2=(Kulka2.getVX()*(Kulka2.getM()-Kulka1.getM())+2*Kulka1.getM()*Kulka1.getVX())/(Kulka1.getM()+Kulka2.getM());
+        	double newVY1=0;
+        	double newVY2=0;
+        	
+            Kulka1.setVX(newVX1);
+            Kulka1.setVY(newVY1);
+            
+            Kulka2.setVX(newVX2);
+            Kulka2.setVY(newVY2);*/
         }
 	}
 	
-	public void kolizjaNiesprezysta()
-	{
-		deltaX=Math.abs(Kulka1.getX()-Kulka2.getX());
+	 
+    public void kolizjaNiesprezysta()
+    {
+    	deltaX=Math.abs(Kulka1.getX()-Kulka2.getX());
         deltaY=Math.abs(Kulka1.getY()-Kulka2.getY());
-        odleglosc=deltaX*deltaX+deltaY*deltaY;
-        
-        if(odleglosc<(Kulka1.getR()/2+Kulka2.getR()/2)*(Kulka1.getR()/2+Kulka2.getR()/2)) 
+        odleglosc=Math.sqrt(deltaX*deltaX+deltaY*deltaY);
+            
+        if(odleglosc<Kulka1.getR()+Kulka2.getR()) 
         {     		
-        	if(Kulka1.getVY()==0 && Kulka2.getVY()==0)
-        	{
-        		double newVX1=(Kulka1.getVX()*Kulka1.getM()+Kulka2.getVX()*Kulka2.getM())/(Kulka1.getM()+Kulka2.getM());
-            	double newVX2=(Kulka1.getVX()*Kulka1.getM()+Kulka2.getVX()*Kulka2.getM())/(Kulka1.getM()+Kulka2.getM());
             	
-            	Kulka1.setVX(newVX1);             
+            double newVX=(Kulka1.getVX()*Kulka1.getM()+Kulka2.getVX()*Kulka2.getM())/(Kulka1.getM()+Kulka2.getM());
+            double newVY=(Kulka1.getVY()*Kulka1.getM()+Kulka2.getVY()*Kulka2.getM())/(Kulka1.getM()+Kulka2.getM());
+            //double newVY1=(Kulka1.getVY()*Kulka1.getM()+Kulka2.getVY()*Kulka2.getM())/(Kulka1.getM()+Kulka2.getM());
+            //double newVY2=(Kulka1.getVY()*Kulka1.getM()+Kulka2.getVY()*Kulka2.getM())/(Kulka1.getM()+Kulka2.getM());
+                	
+            Kulka1.setVX(newVX);
+            Kulka1.setVY(newVY);
+            Kulka2.setVX(newVX);
+            Kulka2.setVY(newVY);
+            	
+            /*if(Kulka1.getVY()==0 && Kulka2.getVY()==0)
+            {
+            	double newVX1=(Kulka1.getVX()*Kulka1.getM()+Kulka2.getVX()*Kulka2.getM())/(Kulka1.getM()+Kulka2.getM());
+                double newVX2=(Kulka1.getVX()*Kulka1.getM()+Kulka2.getVX()*Kulka2.getM())/(Kulka1.getM()+Kulka2.getM());
+                	
+                Kulka1.setVX(newVX1);             
                 Kulka2.setVX(newVX2);
-        	}
-        	
-        	else if(Kulka1.getVX()==0 && Kulka2.getVX()==0)
-        	{
-        		double newVY1=(Kulka1.getVY()*Kulka1.getM()+Kulka2.getVY()*Kulka2.getM())/(Kulka1.getM()+Kulka2.getM());
-            	double newVY2=(Kulka1.getVY()*Kulka1.getM()+Kulka2.getVY()*Kulka2.getM())/(Kulka1.getM()+Kulka2.getM());
+            }
             	
+            else if(Kulka1.getVX()==0 && Kulka2.getVX()==0)
+            {
+            	double newVY1=(Kulka1.getVY()*Kulka1.getM()+Kulka2.getVY()*Kulka2.getM())/(Kulka1.getM()+Kulka2.getM());
+                double newVY2=(Kulka1.getVY()*Kulka1.getM()+Kulka2.getVY()*Kulka2.getM())/(Kulka1.getM()+Kulka2.getM());
+                	
                 Kulka1.setVY(newVY1);              
                 Kulka2.setVY(newVY2);
-        	}
-        }
-	}
+            }*/
+        }	
+    }
 	
 	public void run() 
 	{
 		while(aktywna) 
 		{
-			Kulka1.Warunki();
-			Kulka2.Warunki();
+			if(getZderzenie()=="Sprezyste")
+			{
+				Kulka1.WarunkiSprezyste();
+				Kulka2.WarunkiSprezyste();
+			}
+			else if(getZderzenie()=="Niesprezyste")
+			{
+				Kulka1.WarunkiNiesprezyste();
+				Kulka2.WarunkiNiesprezyste();
+			}
 			
 			wyborZderzenia();
 			repaint();
@@ -224,12 +260,11 @@ public class PanelRysowania extends JPanel implements Runnable
 	
 	public void kolorKulki1()
 	{
-		if(Frame.Language=="PL")
+		if(Frame.Language=="PL") 
 		{
 			Color kolor1=JColorChooser.showDialog(null,"Wybierz Kolor",Color.BLACK);
 			Kulka1.setBallColor(kolor1);
 		}
-		
 		if(Frame.Language=="EN") 
 		{
 			Color kolor1=JColorChooser.showDialog(null,"Choose Color",Color.BLACK);
@@ -244,7 +279,6 @@ public class PanelRysowania extends JPanel implements Runnable
 			Color kolor2=JColorChooser.showDialog(null,"Wybierz Kolor",Color.BLACK);
 			Kulka2.setBallColor(kolor2);
 		}
-		
 		if(Frame.Language=="EN") 
 		{
 			Color kolor2=JColorChooser.showDialog(null,"Choose Color",Color.BLACK);
