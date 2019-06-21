@@ -1,11 +1,11 @@
-package projekt;
+package projektV5;
 
 import java.awt.*;
 import java.awt.event.*;
 
 import javax.swing.*;
 
-public class Frame extends JFrame implements ActionListener 
+public class Frame extends JFrame
 {	
 	JMenu menu=new JMenu("Menu");
 	JMenu submenu=new JMenu("Ustawienia Jezykowe");
@@ -22,12 +22,16 @@ public class Frame extends JFrame implements ActionListener
 	JButton Bstop=new JButton("Stop");
 	JButton Bwykres=new JButton("Wykres V(t)");
 	JButton Bakceptuj=new JButton("Akceptuj");
+	JButton Bprzyklad=new JButton("Przyklad");
 	
 	JRadioButton rBsprezyste=new JRadioButton("Sprezyste");
 	JRadioButton rBniesprezyste=new JRadioButton("Niesprezyste");
 	ButtonGroup buttonGroup=new ButtonGroup();
 	
 	JLabel LRodzajZderzenia=new JLabel("Rodzaj Zderzenia");
+	JLabel liczbaZderzen=new JLabel("Liczba Zderzen");
+	
+	static JTextField liczbaZderzenField=new JTextField("0");
 	
 	JPanel panelKolory=new JPanel();
 	JPanel panelCentralny=new JPanel();
@@ -85,12 +89,15 @@ public class Frame extends JFrame implements ActionListener
 			public void actionPerformed(ActionEvent e)
 			{			        
 		        Bwykres.setEnabled(false);
-		        WykresFrame wykres=new WykresFrame();	        
+		        final WykresFrame wykres=new WykresFrame();	 
+		        final WykresKulka2 wykres2=new WykresKulka2();
+		        
 		        SwingWorker worker=new SwingWorker()
 		        {
 		            protected Object doInBackground() throws Exception
 		            {
 		            	wykres.go();
+		            	wykres2.go();
 		                return null;
 		            }
 
@@ -106,8 +113,32 @@ public class Frame extends JFrame implements ActionListener
 		Bakceptuj.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent e)
-			{
-				panelRysujacy.przedZderzeniem();
+			{			
+				if(JWyborPanel.predkoscKulka1x.getText().isEmpty() ||
+					JWyborPanel.predkoscKulka1y.getText().isEmpty() ||
+					JWyborPanel.predkoscKulka2x.getText().isEmpty() ||
+					JWyborPanel.predkoscKulka2y.getText().isEmpty() ||
+					JWyborPanel.polozenieKulka1x.getText().isEmpty() ||
+					JWyborPanel.polozenieKulka1y.getText().isEmpty() ||
+					JWyborPanel.polozenieKulka2x.getText().isEmpty() ||
+					JWyborPanel.polozenieKulka2y.getText().isEmpty() ||						
+					JWyborPanel.masaKulka1.getText().isEmpty() ||
+					JWyborPanel.masaKulka2.getText().isEmpty())				
+				{
+					JOptionPane.showMessageDialog(null,"Należy uzupełnić wartości");
+				}
+				else
+				{
+					panelRysujacy.przedZderzeniem();
+				}
+			}
+		});
+		
+		Bprzyklad.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent e)
+			{			
+				panelRysujacy.przykladoweWartosci();
 			}
 		});
 		
@@ -160,8 +191,17 @@ public class Frame extends JFrame implements ActionListener
 		panelStartStop.add(Bstart);
 		panelStartStop.add(Bstop);
 		panelStartStop.add(Bwykres);
+		panelStartStop.add(liczbaZderzen);
+		
+		liczbaZderzen.setHorizontalAlignment(JLabel.CENTER);
+		liczbaZderzenField.setHorizontalAlignment(JTextField.CENTER);
+		
+		panelStartStop.add(liczbaZderzenField);
 		this.add(panelStartStop,BorderLayout.LINE_START);
 		
+		panelDane.add(new JLabel(""));
+		panelDane.add(Bprzyklad);
+		panelDane.add(new JLabel(""));
 		panelDane.add(Bakceptuj);
 		this.add(panelDane,BorderLayout.LINE_END);
 
@@ -176,13 +216,12 @@ public class Frame extends JFrame implements ActionListener
 	public JMenuBar createMenu()
 	{
 		menuBar.add(menu);
-	
+		
 		submenu.setMnemonic(KeyEvent.VK_S);
 		
 		submenuItem1.setActionCommand("Jezyk Polski");
 		submenuItem1.addActionListener(new ActionListener() 
 		{
-
 			public void actionPerformed(ActionEvent e) 
 			{
 				if(Language=="EN") 

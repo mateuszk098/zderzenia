@@ -1,8 +1,10 @@
-package projekt;
+package projektV5;
 
 import java.awt.*;
+import java.awt.event.*;
 
 import javax.swing.*;
+import javax.swing.event.*;
 
 public class JWyborPanel extends JPanel
 {
@@ -48,8 +50,8 @@ public class JWyborPanel extends JPanel
 	
 	JWyborPanel()
 	{	
-		this.setLayout(new GridLayout(20,1));
- 
+		this.setLayout(new GridLayout(22,1));
+
 		this.add(LKulka1);
 		this.add(LPredkoscKulka1);
 		this.add(LSkladowePredkosciKulka1);
@@ -64,8 +66,7 @@ public class JWyborPanel extends JPanel
 		this.add(LMasaKulki1);
 		panelMasa1.add(masaKulka1);
 		this.add(panelMasa1);	
-		
-		
+				
 		this.add(LKulka2);
 		this.add(LPredkoscKulka2);
 		this.add(LSkladowePredkosciKulka2);
@@ -80,8 +81,6 @@ public class JWyborPanel extends JPanel
 		this.add(LMasaKulki2);
 		panelMasa2.add(masaKulka2);
 		this.add(panelMasa2);
-		
-		this.add(new JLabel(""));
 		
 		predkoscKulka1x.setHorizontalAlignment(JTextField.CENTER);
 		predkoscKulka1y.setHorizontalAlignment(JTextField.CENTER);

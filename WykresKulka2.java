@@ -14,10 +14,10 @@ import org.knowm.xchart.XYChart;
 import org.knowm.xchart.style.Styler.LegendPosition;
 
 
-public class WykresFrame extends JFrame
+public class WykresKulka2 extends JFrame
 {
 	MySwingWorker mySwingWorker=new MySwingWorker();
-	XYChart chart=QuickChart.getChart("","T (s)","|V| (m/s)","Kulka 1",new double[] {0},new double[] {0});
+	XYChart chart=QuickChart.getChart("","T (s)","|V| (m/s)","Kulka 2",new double[] {0},new double[] {0});
 	SwingWrapper<XYChart> sw=new SwingWrapper<XYChart>(chart);
 	
 	public void go() 
@@ -32,28 +32,28 @@ public class WykresFrame extends JFrame
  
 	public class MySwingWorker extends SwingWorker <Boolean,double[]> 
 	{
-		LinkedList<Double> kulka1=new LinkedList<Double>();
+		LinkedList<Double> kulka2=new LinkedList<Double>();
 		
 		public MySwingWorker()
 		{
-			kulka1.add(getPredkoscKulka1());
+			kulka2.add(getPredkoscKulka2());
 		}		
 		
 		public Boolean doInBackground() throws Exception 
 		{
 			while (!isCancelled()) 
 			{
-				kulka1.add(getPredkoscKulka1());
+				kulka2.add(getPredkoscKulka2());
 				
-				if (kulka1.size()>500) 
+				if (kulka2.size()>500) 
 				{
-					kulka1.removeFirst();
+					kulka2.removeFirst();
 				}
     	  
-				double[] array=new double[kulka1.size()];
-				for (int i=0; i<kulka1.size(); i++) 
+				double[] array=new double[kulka2.size()];
+				for (int i=0; i<kulka2.size(); i++) 
 				{
-					array[i]=kulka1.get(i);
+					array[i]=kulka2.get(i);
 				}
 				publish(array);
 				
@@ -70,7 +70,7 @@ public class WykresFrame extends JFrame
 		{
 			double[] mostRecentDataSet=chunks.get(chunks.size()-1);
  
-			chart.updateXYSeries("Kulka 1",null,mostRecentDataSet,null);
+			chart.updateXYSeries("Kulka 2",null,mostRecentDataSet,null);
 			sw.repaintChart();
 			
 			long start=System.currentTimeMillis();
@@ -87,8 +87,8 @@ public class WykresFrame extends JFrame
 		}
 	}
 	
-	public double getPredkoscKulka1()
+	public double getPredkoscKulka2()
 	{
-		return Math.round(Math.sqrt(PanelRysowania.Kulka1.getVX()*PanelRysowania.Kulka1.getVX()+PanelRysowania.Kulka1.getVY()*PanelRysowania.Kulka1.getVY()));
+		return Math.round(Math.sqrt(PanelRysowania.Kulka2.getVX()*PanelRysowania.Kulka2.getVX()+PanelRysowania.Kulka2.getVY()*PanelRysowania.Kulka2.getVY()));
 	}
 }

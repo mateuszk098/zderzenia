@@ -1,7 +1,17 @@
-package projekt;
+package projektV5;
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.Arrays;
+
+import javax.imageio.ImageIO;
+import javax.swing.JColorChooser;
 
 public class Kulka
 {
@@ -46,9 +56,9 @@ public class Kulka
 			setY(getR());
 			setVY(-getVY());
 		}
-		if(getY()+getR()>440)
+		if(getY()+getR()>460)
 		{
-			setY(440-getR());
+			setY(460-getR());
             setVY(-getVY());
 		}
 	}
@@ -74,9 +84,9 @@ public class Kulka
 			setY(getR());
 			setVY(0);
 		}
-		if(getY()+getR()>440)
+		if(getY()+getR()>460)
 		{
-			setY(440-getR());
+			setY(460-getR());
             setVY(0);
 		}
 	}
